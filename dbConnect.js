@@ -7,7 +7,9 @@ function dbConnect() {
                 useNewUrlParser: true,
                 useUnifiedTopology: true
             }
-        ).then(err => console.log('Mongo connected'))
+        ).then(() => {
+          console.log('Mongo connected')
+        }).catch(err => console.log(err))
 }
 
 module.exports = dbConnect

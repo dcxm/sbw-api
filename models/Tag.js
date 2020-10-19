@@ -1,22 +1,19 @@
-const { Schema, model } = require('mongoose')
+const {Schema, model} = require('mongoose')
 
 const Types = Schema.Types
 
-const collectionSchema = Schema({
-    title: {
+const tagSchema = Schema({
+    name: {
         type: Types.String,
         required: true
-    },
-    description: {
-        type: Types.String
     },
     items: [{
         type: Types.ObjectId,
         ref: 'Item'
     }],
-    tags: [{
+    collections: [{
         type: Types.ObjectId,
-        ref: 'Tag'
+        ref: 'Collection'
     }],
     users: [{
         type: Types.ObjectId,
@@ -24,4 +21,4 @@ const collectionSchema = Schema({
     }]
 }, { timestamps: true })
 
-module.exports = model('Collection', collectionSchema)
+module.exports = model('Tag', tagSchema)

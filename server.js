@@ -28,6 +28,7 @@ app.use(passport.session())
 // routes
 app.use('/users', require('./routes/users.js'))
 app.use('/items', require('./routes/items.js'))
+app.use('/tags', require('./routes/tags.js'))
 
 const PORT = process.env.PORT || 5000
 

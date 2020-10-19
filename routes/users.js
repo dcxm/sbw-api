@@ -6,24 +6,20 @@ const { authenticate } = require('../passportAuth')
 
 const User = require('../models/User')
 
-router.get('/:id', authorize, async (req, res) => {
-    if (req.params.id == req.user._id) {
-        try {
-            const user = await User.findOne({_id: req.user._id}).select('-password -items').exec()
-            if (user) return res.status(200).json(user)
-            return res.status(404).json({error: 'User not found'})
-        } catch (err) {
-            if (err) return res.json({error: err})
-        }
-    }   else {
-        return res.status(403).json({error: 'Not authorized'})
+router.get('/', authorize, async (req, res) => {
+    try {
+        const user = await User.findOne({ _id: req.user._id }).select('-password -items').exec()
+        if (user) return res.status(200).json(user)
+        return res.status(404).json({ error: 'User not found' })
+    } catch (err) {
+        if (err) return res.json({ error: err })
     }
 })
 
 router.post('/login', (req, res, next) => {
     if (req.user) {
-        res.json({error: 'User already logged in'})
-    }   else authenticate(req, res, next)
+        res.json({ error: 'User already logged in' })
+    } else authenticate(req, res, next)
 })
 
 router.post('/signup', (req, res) => {
@@ -48,7 +44,7 @@ router.post('/signup', (req, res) => {
             }
         })
     } else {
-        res.json({error: 'Already logged in'})
+        res.json({ error: 'Already logged in' })
     }
 })
 

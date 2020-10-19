@@ -14,16 +14,17 @@ router.get('/', authorize, async (req, res) => {
     try {
         const items = await Item.find({ users: { $in: [req.user._id] } })
             .sort(sortQuery(req, sortableFields, defaultField, 'desc'))
+            .populate('tags', '-items -collections -users')
             .exec()
         res.status(200).json(items)
     } catch (err) {
-        if (err) res.json({ error: { err } })
+        if (err) return res.json({ error: { err } })
     }
 })
 
 router.get('/:id', authorize, async (req, res) => {
     try {
-        const item = await Item.findOne({ _id: req.params.id, users: { $in: req.user._id } }).exec()
+        const item = await Item.findOne({ _id: req.params.id, users: { $in: req.user._id } }).populate('tags', '-items -collections -users').exec()
         if (!item) return res.status(404).json({ error: 'Item not found' })
         res.status(200).json(item)
     } catch (err) {
@@ -36,7 +37,8 @@ router.post('/', authorize, (req, res) => {
     new Item({
         title: req.body.title,
         summary: req.body.summary,
-        content: `<h1>${req.title}</h1>`,
+        content: `<h1>${req.body.title}</h1>`,
+        completed: req.body.completed,
         users: [req.user._id, ...req.body.users]
     }).save((err, createdItem) => {
         if (err) return res.json(err)
@@ -49,8 +51,9 @@ router.post('/', authorize, (req, res) => {
 
 router.patch('/:id', authorize, async (req, res) => {
     try {
-        const updatedItem = await Item.findOneAndUpdate({ _id: req.params.id }, req.body, {new: true}).exec()
+        const updatedItem = await Item.findOneAndUpdate({ _id: req.params.id }, req.body, {new: true}).populate('tags', '-items -collections -users').exec()
         if (!updatedItem) return res.status(404).json({error: 'Cannot find item to update'})
+        console.log(updatedItem)
         return res.status(200).json(updatedItem)
     } catch (err) {
         if (err) return res.json({error: 'Cannot update item, please try again', errorDetails: err})

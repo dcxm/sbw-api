@@ -21,6 +21,10 @@ const itemSchema = Schema({
         type: Types.ObjectId,
         ref: 'Collection'
     }],
+    tags: [{
+        type: Types.ObjectId,
+        ref: 'Tag'
+    }],
     users: [{
         type: Types.ObjectId,
         ref: 'User'
